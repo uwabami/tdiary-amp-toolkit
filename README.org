@@ -1,0 +1,33 @@
+* What's this?
+
+  [[http://www.tdiary.org/][tDiary]] の出力を [[https://www.ampproject.org/][amp html]] にするための patch と plugin.
+
+  単に [[https://www.ampproject.org/][amp html]] の出力を用意するだけならば, 本体に同梱されている =amp.rb= プラグインを有効にするのが良いでしょう.
+
+* How to use
+
+  1. tdiary.conf 内で
+     #+BEGIN_SRC ruby
+:
+repos = "location of this repository"
+@options['sp.path'] = ['/usr/share/tdiary/misc/plugin', "#{repos}/plugins"]
+load_cgi_conf
+require "#{repos}/patches/amp.rb"
+:
+     #+END_SRC
+     とする.
+
+  2. プラグイン画面で
+     =00_amp_header.rb= と =zz_amp_header_and_footer.rb= を
+     有効にする.
+* 不具合など
+
+  沢山あります.
+  そもそも [[http://www.tdiary.org/][tDiary]] は =HTML4.01 Strict= で記述することになっているので
+  様々な plugin が動かないでしょう(動くけれど AMP Validation に失敗するでしょう).
+
+  - 気にしている所/TODO [0/1]
+    - =patches/amp.rb= で =eval_rhtml= を上書きしている(=gsub= してる)が, イケてない気がする.
+    - [ ] =ld+json= を提供すること
+    - [ ] 動作する/させる mode はこれで正しいか?
+    - [ ] ツッコミを =amp-form= で動くようにする.
