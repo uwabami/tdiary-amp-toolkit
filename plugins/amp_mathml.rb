@@ -30,7 +30,7 @@ add_header_proc do
 end
 
 def amp_mathml(src = nil)
-	%Q|<amp-mathml layout="container" data-formula="#{CGI.unescapeHTML(src)}"></amp-mathml>|
+	%Q|<amp-mathml layout="container" data-formula="#{src}"></amp-mathml>|
 end
 
 def amp_mathml_inline (src = nil)
@@ -44,3 +44,4 @@ end
 # ruby-indent-level: 3
 # End:
 # vim: ts=3
+9
