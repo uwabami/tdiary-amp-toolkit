@@ -4,22 +4,28 @@
 # Copyright (c) 2018 Youhei SASAKI <uwabami@gfd-dennou.org>
 #
 # usage:
-#   <%= amp_mathml, "src" %>
+#   <%= amp_mathml "src" %>
 #
 add_header_proc do
 	mathml_on = false
 	case @mode
 	when 'latest'
-		if @diaries[@date.strftime('%Y%m%d')].to_html =~/<%=amp_mathml.+?%>/
+		if @diaries[@date.strftime('%Y%m%d')].to_html =~/<%=amp_mathml\s.+?%>/
 			mathml_on = true
 		end
 	when 'day'
-		if @diaries[@date.strftime('%Y%m%d')].to_html =~/<%=amp_mathml.+?%>/
+		if @diaries[@date.strftime('%Y%m%d')].to_html =~/<%=amp_mathml\s.+?%>/
 			mathml_on = true
 		end
 	when 'month'
 		@diaries.each do |diary|
-			if diary[1].to_html =~/<%=amp_mathml.+?%>/
+			if diary[1].to_html =~/<%=amp_mathml\s.+?%>/
+				mathml_on = true
+			end
+		end
+	when 'nyear'
+		@diaries.each do |diary|
+			if diary[1].to_html =~/<%=amp_mathml\s.+?%>/
 				mathml_on = true
 			end
 		end
@@ -30,7 +36,7 @@ add_header_proc do
 end
 
 def amp_mathml(src = nil)
-	%Q|<amp-mathml layout="container" data-formula="#{src}"></amp-mathml>|
+	%Q|<amp-mathml layout="container" data-formula="#{h(src)}"></amp-mathml>|
 end
 
 def amp_mathml_inline (src = nil)
@@ -44,4 +50,3 @@ end
 # ruby-indent-level: 3
 # End:
 # vim: ts=3
-9
