@@ -23,18 +23,20 @@ def robot_control
 end
 
 add_header_proc do
-	header = ''
+	header = "	<!-- #{@mode} -->\n"
 	case @mode
 	when 'latest'
 		header += %Q|	<link rel="canonical" href="#{URI.join(@conf.base_url, anchor(@date.strftime('%Y%m%d')))}">|
 	when 'day'
-		diary = @diaries[@date.strftime('%Y%m%d')]
 		header += %Q|	<link rel="canonical" href="#{URI.join(@conf.base_url, anchor(@date.strftime('%Y%m%d')))}">|
 	when 'month'
 		header += %Q|	<link rel="canonical" href="#{URI.join(@conf.base_url, anchor(@date.strftime('%Y%m')))}">|
+	when 'nyear'
+		header += %Q|	<link rel="canonical" href="#{URI.join(@conf.base_url, anchor(@cgi.params['date'][0].to_s))}">|
 	else
 		''
 	end
+	header
 end
 
 # Local Variables:
