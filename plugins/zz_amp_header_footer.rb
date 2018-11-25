@@ -35,7 +35,7 @@ def amp_theme_css  # <-- from amp.rb
 end
 
 add_header_proc do
-	header = "<!-- #{@mode} -->"
+	header = ''
 	unless /^(?:latest|day|month|nyear|search|categoryview)$/ =~ @mode
 		header += %Q|\n	<style amp-custom>\n#{amp_theme_css}#{amp_conf_css}body{padding-top: 100px;}</style>|
 	else

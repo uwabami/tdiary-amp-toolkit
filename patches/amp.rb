@@ -21,6 +21,7 @@ module TDiary
 			.gsub(/^\t(<meta name="generator")/,
 					"\t<script async src=\"https://cdn.ampproject.org/v0.js\"></script>\n\t\\1")
 			.gsub(/(width=device-width,initial-scale=1)/,'\\1,minimum-scale=1')
+ 			.gsub(/(<div class="whole-content">\n)/,"\t\\1\t</div>\n\t<!-- close whole-content tag for amp-sidebar -->")
 	 end
 
   end
