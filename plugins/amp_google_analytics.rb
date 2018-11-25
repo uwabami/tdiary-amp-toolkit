@@ -16,39 +16,38 @@ add_header_proc do
 end
 
 def amp_google_analytics_consent
-	amp_google_analytics_consent = %Q|<!-- amp_google_consent -->\n|
+	amp_google_analytics_consent = %Q|\t<!-- amp_google_consent -->\n|
 	if /^(?:latest|day|month|nyear|search)$/ =~ @mode
 		amp_google_analytics_consent << <<-EOS
-<amp-geo layout="nodisplay">
-      <script type="application/json">
-       {
-           "ISOCountryGroups": {
-               "eea": [ "at", "be", "bg", "cy", "cz", "de", "dk", "ee", "es", "fi",
-                        "fr", "gb", "gr", "hr", "hu", "ie", "is", "it", "li", "lt",
-                        "lu", "lv", "mt", "nl", "no", "pl", "pt", "ro", "se", "si",
-                        "sk"]
-           }
-       }
-
-      </script>
-    </amp-geo>
-    <amp-consent layout="nodisplay" id="consent-element">
-      <script type="application/json">
-     {
-         "consents": {
-             "my_consent": {
-                 "promptIfUnknownForGeoGroup": "eea",
-                 "promptUI": "consent-ui"
-             }
-         }
-     }
-      </script>
-      <div id="consent-ui">
-        <button on="tap:consent-element.accept" role="button">Accept</button>
-        <button on="tap:consent-element.reject" role="button">Reject</button>
-        <button on="tap:consent-element.dismiss" role="button">Dismiss</button>
-      </div>
-    </amp-consent>
+	<amp-geo layout="nodisplay">
+		<script type="application/json">
+		{
+			"ISOCountryGroups": {
+				"eea": [ "at", "be", "bg", "cy", "cz", "de", "dk", "ee", "es", "fi",
+							"fr", "gb", "gr", "hr", "hu", "ie", "is", "it", "li", "lt",
+							"lu", "lv", "mt", "nl", "no", "pl", "pt", "ro", "se", "si",
+							"sk"]
+			}
+		}
+		</script>
+	</amp-geo>
+	<amp-consent layout="nodisplay" id="consent-element">
+		<script type="application/json">
+		{
+			"consents": {
+				"my_consent": {
+					"promptIfUnknownForGeoGroup": "eea",
+					"promptUI": "consent-ui"
+				}
+			}
+		}
+		</script>
+		<div id="consent-ui">
+			<button on="tap:consent-element.accept" role="button">Accept</button>
+			<button on="tap:consent-element.reject" role="button">Reject</button>
+			<button on="tap:consent-element.dismiss" role="button">Dismiss</button>
+		</div>
+	</amp-consent>
 EOS
 	end
 	amp_google_analytics_consent
@@ -58,19 +57,19 @@ add_footer_proc do
 	if /^(?:latest|day|month|nyear|search)$/ =~ @mode
 		<<-EOS
 	<amp-analytics type="googleanalytics">
-	<script type="application/json">
-	{
-	  "vars": {
-	    "account": "UA-#{@conf['google_analytics.profile']}"
-	  },
-	  "triggers": {
-	    "trackPageview": {
-	      "on": "visible",
-	      "request": "pageview"
-	    }
-	  }
-	}
-	</script>
+		<script type="application/json">
+		{
+			"vars": {
+				"account": "UA-#{@conf['google_analytics.profile']}"
+			},
+			"triggers": {
+				"trackPageview": {
+					"on": "visible",
+					"request": "pageview"
+				}
+			}
+		}
+		</script>
 	</amp-analytics>
 EOS
 	end
