@@ -21,6 +21,7 @@ def robot_control
 		%Q|<!-- robot control tag -->|
 	end
 end
+
 def ogp_tag
 	# title
 	h = %Q|<meta property="og:type" content="article">|
@@ -29,7 +30,6 @@ def ogp_tag
 	image = (@conf.banner.nil? || @conf.banner == '') ? File.join(@conf.base_url, "#{theme_url}/ogimage.png") : @conf.banner
 	ogp['og:image'] = image
 	# options
-	ogp['article:author'] = @conf.author_name
 	ogp['og:site_name'] = @conf.html_title
 	ogp['og:description'] = short_desc
 	case @mode
@@ -56,6 +56,9 @@ def ogp_tag
 		ogp['twitter:title'] = ogp['og:title']
 		ogp['twitter:description'] = ogp['og:description']
 		ogp['twitter:image'] = ogp['og:image']
+	end
+	if @conf['facebook.appid']
+		ogp['fb:appid'] = "#{conf['facebook.appid']}"
 	end
 	ogp.map { |k, v|
 		h << %Q|\n	<meta property="#{k}" content="#{h(v)}">|
@@ -94,12 +97,12 @@ LD_JSON_HEAD
 	h += <<-LD_JSON_BOTTOM.chomp
 			"author": {
 				"@type": "Person",
-				"name": "#{ogp['article:author']}",
+				"name": "#{@conf.author_name}",
 				"image": "https://uwabami.junkhub.org/log/images/face.jpg"
 			},
 			"publisher": {
 				"@type": "Organization",
-				"name": "#{ogp['article:author']}",
+				"name": "#{@conf.author_name}",
 				"logo": {
 					"@type": "ImageObject",
 					"url": "#{ogp['og:image']}",
