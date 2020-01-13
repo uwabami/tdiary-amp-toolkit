@@ -7,12 +7,28 @@
 # You can redistribute it and/or modify it under GPL.
 #
 def amp_conf_css   # <-- from amp.rb
-	conf_css_path = theme_paths_local.map {|path|
-		File.join(File.dirname(path), "conf.css")
-	}.find {|path|
-		File.exist?(path)
-	}
-	conf_css_path ? File.read(conf_css_path) : ''
+	_, location, theme = @conf.theme.match(%r|(\w+)/(\w+)|).to_a
+	case location
+	when 'online'
+		require 'uri'
+		require 'open-uri'
+		uri = URI.parse(theme_url_online(theme))
+		uri.scheme ||= 'https'
+		URI.parse(uri.to_s).read
+	when 'local'
+		theme_path = theme_paths_local.map {|path|
+			File.join(File.dirname(path), "#{theme}/conf.css")
+		}.find {|path|
+			File.exist?(path)
+		}
+		theme_path ? File.read(theme_path) : ''
+	end
+	# conf_css_path = theme_paths_local.map {|path|
+	# 	File.join(File.dirname(path), "conf.css")
+	# }.find {|path|
+	# 	File.exist?(path)
+	# }
+	# conf_css_path ? File.read(conf_css_path) : ''
 end
 
 def amp_theme_css  # <-- from amp.rb
@@ -37,7 +53,7 @@ end
 add_header_proc do
 	header = ''
 	unless /^(?:latest|day|month|nyear|search|categoryview)$/ =~ @mode
-		header += %Q|\n	<style amp-custom>\n#{amp_theme_css}#{amp_conf_css}body{padding-top: 100px;}</style>|
+		header += %Q|\n	<style amp-custom>#{amp_theme_css.chomp}#{amp_conf_css.chomp}</style>|
 	else
 		header += %Q|\n	<style amp-custom>#{amp_theme_css.chomp}</style>|
 	end

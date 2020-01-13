@@ -36,7 +36,7 @@ add_header_proc do
 end
 
 def amp_twitter(tweetid = nil)
-	%Q|<amp-twitter data-tweetid=#{tweetid} width=800 height=600 layout="responsive"></amp-twitter>|
+	%Q|<amp-twitter data-tweetid=#{tweetid} width=550 height=600 layout="responsive"></amp-twitter>|
 end
 
 

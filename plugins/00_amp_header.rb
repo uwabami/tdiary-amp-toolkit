@@ -34,7 +34,7 @@ def ogp_tag
 	ogp['og:description'] = short_desc
 	case @mode
 	when 'day'
-		ogp['og:title'] = title_tag.gsub(/<[^>]*>/, "")
+		ogp['og:title'] = title_tag.gsub(/<[^>]*>/, "").gsub(/^\\* /,'')
 		ogp['og:url'] = URI.join(@conf.base_url, anchor(@date.strftime('%Y%m%d')))
 	when 'latest'
 		ogp['og:title'] = title_tag.gsub(/<[^>]*>/, "") + "(最新)"
