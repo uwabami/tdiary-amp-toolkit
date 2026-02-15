@@ -37,7 +37,8 @@ end
 
 def amp_gist( gist_id, height )
   <<-HTML
-<amp-gist data-gistid="#{gist_id}"
+<amp-gist
+    data-gistid="#{gist_id}"
     layout="fixed-height"
     height="#{height}">
 </amp-gist>

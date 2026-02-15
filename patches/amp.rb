@@ -14,16 +14,14 @@ module TDiary
 	 alias_method :_orig_eval_rhtml, :eval_rhtml
 	 def eval_rhtml( prefix = '' )
 		_orig_eval_rhtml( prefix )
-			.gsub(/^<html lang="ja-JP">/,'<html amp lang=ja>')
-			.gsub(/^<html lang="en-US">/,'<html amp lang=en>')
-			.gsub(/^<html>/,'<html amp>')
-			.gsub(/^<head>/,'<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">')
-			.gsub(/^\t(<meta name="generator")/,
-					"\t<script async src=\"https://cdn.ampproject.org/v0.js\"></script>\n\t\\1")
+			.gsub(/^<html lang="ja-JP">/,'<html ⚡ lang=ja data-theme="light">')
+			.gsub(/^<html lang="en-US">/,'<html ⚡ lang=en data-theme="light">')
+			.gsub(/^<html>/,'<html ⚡ data-theme="light">')
+			.gsub(/^<head>/,'<head prefix="og:http://ogp.me/ns# fb:http://ogp.me/ns/fb# article:http://ogp.me/ns/article#">')
+			.gsub(/^\t(<meta name="generator" content="tDiary 5.1.0">)/,"\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n\t\\1")
 			.gsub(/(width=device-width,initial-scale=1)/,'\\1,minimum-scale=1')
- 			.gsub(/(<div class="whole-content">\n)/,"\t\\1\t</div>\n\t<!-- close whole-content tag for amp-sidebar -->")
+			.gsub(/^<div class="whole-content">\n\n/,'')
 	 end
-
   end
 end
 

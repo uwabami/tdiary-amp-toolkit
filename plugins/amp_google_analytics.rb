@@ -1,5 +1,4 @@
 # coding: utf-8
-# Show navi for basscss theme
 #
 # Copyright (c) 2018 Youhei SASAKI <uwabami@gfd-dennou.org>
 #
@@ -12,6 +11,7 @@ add_header_proc do
 		header  = %Q|\n	<script async custom-element="amp-geo" src="https://cdn.ampproject.org/v0/amp-geo-0.1.js"></script>|
 		header += %Q|\n	<script async custom-element="amp-consent" src="https://cdn.ampproject.org/v0/amp-consent-0.1.js"></script>|
 		header += %Q|\n	<script async custom-element="amp-analytics" src="https://cdn.ampproject.org/v0/amp-analytics-0.1.js"></script>|
+		header += %Q|\n	<meta name="amp-consent-blocking" content="amp-analytics">|
 	end
 end
 
@@ -43,6 +43,7 @@ def amp_google_analytics_consent
 		}
 		</script>
 		<div id="consent-ui">
+		<p>I use cookies to analyze how visitors use my website via Google Analytics:</p>
 			<button on="tap:consent-element.accept" role="button">Accept</button>
 			<button on="tap:consent-element.reject" role="button">Reject</button>
 			<button on="tap:consent-element.dismiss" role="button">Dismiss</button>
@@ -56,21 +57,24 @@ end
 add_footer_proc do
 	if /^(?:latest|day|month|nyear|search)$/ =~ @mode
 		<<-EOS
-	<amp-analytics type="googleanalytics">
-		<script type="application/json">
-		{
-			"vars": {
-				"account": "UA-#{@conf['google_analytics.profile']}"
-			},
-			"triggers": {
-				"trackPageview": {
-					"on": "visible",
-					"request": "pageview"
-				}
-			}
-		}
-		</script>
-	</amp-analytics>
+		<amp-analytics data-block-on-consent
+							type="googleanalytics"
+							config="https://uwabami.junkhub.org/log/ga4.json"
+							data-credentials="include"
+							data-block-on-consent>
+		  <script type="application/json">
+			 {
+				  "vars": {
+						"GA4_MEASUREMENT_ID": "G-#{@conf['google_analytics.profile']}",
+						"GA4_ENDPOINT_HOSTNAME": "www.google-analytics.com",
+						"DEFAULT_PAGEVIEW_ENABLED": true,
+						"GOOGLE_CONSENT_ENABLED": true,
+						"WEBVITALS_TRACKING": false,
+						"PERFORMANCE_TIMING_TRACKING": false
+				  }
+			 }
+		  </script>
+		</amp-analytics>
 EOS
 	end
 end
