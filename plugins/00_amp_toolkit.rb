@@ -55,13 +55,11 @@ end
 # OGP画像生成メソッド (白背景・青帯・丸アイコン)
 # ----------------------------------------------------------------
 def generate_og_image_card(title, date_str)
-	# 保存先ディレクトリの準備 -- これは CGI でやる事なんかな?
-	FileUtils.mkdir_p(@conf['amp_ogp_dir']) unless File.exist?(@conf['amp_ogp_dir'])
 	filename = "ogp_#{date_str}.png"
 	file_path = File.join(@conf['amp_ogp_dir'], filename)
 	public_url = "#{@conf['amp_ogp_url']}/#{filename}"
 	# キャッシュがあればURLを返して終了
-	return public_url if File.exist?(file_path)
+	# return public_url if File.exist?(file_path)
 	# --- 描画開始 ---
 	width, height = 1200, 630
 	header_height = 25
@@ -138,10 +136,10 @@ def generate_og_image_card(title, date_str)
 		rescue => e
 			warn "OGP Icon Error: #{e.message}"
 		end
-		image.write(file_path)
-		image.destroy!
-		return public_url
 	end
+	image.write(file_path)
+	image.destroy!
+	return public_url
 end
 
 def ogp_tag
@@ -183,7 +181,7 @@ def ogp_tag
 			end
 			ogp['og:url'] = URI.join(@conf.base_url, anchor(date_key))
 			begin
-				ogp['og:image'] = generate_og_image_card(ogp['og:title'], date_key)
+		 		ogp['og:image'] = generate_og_image_card(ogp['og:title'], date_key)
 			rescue => e
 				ogp['og:image'] = top_image
 			end
@@ -384,7 +382,7 @@ add_conf_proc('00_amp_toolkit', 'amp toolkit', 'basic') do
 		@conf['amp_ogp_icon_path'] = @cgi.params['amp_ogp_icon_path'][0]
 		@conf['amp_ogp_author_image_url'] = @cgi.params['amp_ogp_author_image_url'][0]
 	end
-	<<-HTML
+	r = <<-HTML
 <h4>生成する OGP 画像の保存先</h4>
 <p>CGIが読み書きできる場所,
 公開できる場所である必要があります<br>
@@ -412,12 +410,13 @@ OGP の JSON で指定します.
 <!-- %%%%% -->
 <h4>OGP 画像のアイコン</h4>
 <p>OGPカードに掲載するアイコン画像の場所<br>
-<input name="amp_ogp_font_path"></p>
+<input name="amp_ogp_icon_path"></p>
 <!-- %%%%% -->
 <h4>OGP 画像の著者画像</h4>
 <p>OGPカードに掲載する著者画像の公開URL<br>
 <input name="amp_ogp_author_image_url"></p>
 HTML
+	r
 end
 
 # Local Variables:
