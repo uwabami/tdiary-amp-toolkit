@@ -1,15 +1,39 @@
 # coding: utf-8
-# section_footer2.rb
+# amp_section_footer2.rb
 #
 # Copyright (c) 2008 SHIBATA Hiroshi <shibata.hiroshi@gmail.com>
-#               2018 Youhei SASAKI <wuabami@gfd-dennou.org>
+#               2018-2026 Youhei SASAKI <wuabami@gfd-dennou.org>
 # You can redistribute it and/or modify it under GPL2.
 #
 
-add_header_proc do
-	if /^(?:latest|day|month|nyear)$/ =~ @mode
-		%Q|\n	<script async custom-element="amp-social-share" src="https://cdn.ampproject.org/v0/amp-social-share-0.1.js"></script>|
-	end
+unless respond_to?(:author_mail_tag_amp_section_footer)
+  alias :author_mail_tag_amp_section_footer :author_mail_tag
+end
+def author_mail_tag()
+	h = author_mail_tag_amp_section_footer
+	h += section_footer_prefetch if check_section_footer_needed
+	h
+end
+
+unless respond_to?(:robot_control_amp_section_footer)
+  alias :robot_control_amp_section_footer :robot_control
+end
+def robot_control()
+	h = robot_control_amp_section_footer
+	h += section_footer_async if check_section_footer_needed
+	h
+end
+
+def section_footer_prefetch
+	h = %Q|\n\t<link rel="preload" as="script" href="https://cdn.ampproject.org/v0/amp-social-share-0.1.js">|
+end
+def section_footer_async
+	h = %Q|\n\t<script async custom-element="amp-social-share" src="https://cdn.ampproject.org/v0/amp-social-share-0.1.js"></script>|
+end
+def check_section_footer_needed
+	section_footer_on = false
+	section_footer_on = true if /^(?:latest|day|month|nyear)$/ =~ @mode
+	return section_footer_on
 end
 
 def permalink( date, index, escape = true )

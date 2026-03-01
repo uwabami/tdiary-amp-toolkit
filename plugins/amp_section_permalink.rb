@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011, KADO Masanori <kdmsnr@gmail.com>
-#               2018, Youhei SASAKI <uwabami@gfd-dennou.org>
+#               2018-2026, Youhei SASAKI <uwabami@gfd-dennou.org>
 #
 # sample .htaccess:
 # <IfModule mod_rewrite.c>

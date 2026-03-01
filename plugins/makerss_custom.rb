@@ -385,8 +385,7 @@ def makerss_body( uri, rdfsec )
 		if sub.empty?
 			sub = @conf.shorten( remove_tag( body ).strip, 20 )
 		end
-        sub = sub.gsub(/^\* /,'')
-		rdf << %Q|<title>#{sub}</title>\n|
+		rdf << %Q|<title>#{sub.gsub(/^\* /,'')}</title>\n|
 		rdf << %Q|<dc:creator>#{h @conf.author_name}</dc:creator>\n|
 		rdfsec.section['category'].each do |category|
 			rdf << %Q|<dc:subject>#{h category}</dc:subject>\n|
@@ -442,15 +441,15 @@ add_update_proc do
 end
 
 add_header_proc {
-	html = "\n"
-	@makerss_rsses.uniq.each do |rss|
+	html = ''
+	@makerss_rsses.each do |rss|
 		next unless rss.url
-		html << %Q|\t<link rel="alternate" type="application/rss+xml" title="RSS#{h rss.title}" href="#{h rss.url}">\n|
+		html << %Q|\n\t<link rel="alternate" type="application/rss+xml" title="RSS#{h rss.title}" href="#{h rss.url}">|
 	end
 	html
 }
 
-add_conf_proc( 'makerss', @makerss_conf_label, 'update' ) do
+add_conf_proc( 'makerss_custom', "RSS生成", 'etc' ) do
 	if @mode == 'saveconf' then
 		%w( hidecontent shortdesc comment_link no_comments).each do |s|
 			item = "makerss.#{s}"

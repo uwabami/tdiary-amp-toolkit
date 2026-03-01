@@ -6,37 +6,35 @@
 #   <%= amp_gist gist_id, height %>
 #
 
-add_header_proc do
-  gist_on = false
-  case @mode
-  when 'latest'
-    if @diaries[@date.strftime('%Y%m%d')].to_html =~/<%=amp_gist\s.+?%>/
-      gist_on = true
-    end
-  when 'day'
-    if @diaries[@date.strftime('%Y%m%d')].to_html =~/<%=amp_gist\s.+?%>/
-      gist_on = true
-    end
-  when 'month'
-    @diaries.each do |diary|
-      if diary[1].to_html =~/<%=amp_gist\s.+?%>/
-        gist_on = true
-      end
-    end
-  when 'nyear'
-	@diaries.each do |diary|
-	  if diary[1].to_html =~/<%=amp_gist\s.+?%>/
-		gist_on = true
-	  end
-	end
-  end
-  if gist_on
-    %Q|\n	<script async custom-element="amp-gist" src="https://cdn.ampproject.org/v0/amp-gist-0.1.js"></script>|
-  end
+unless respond_to?(:author_mail_tag_amp_gist)
+  alias :author_mail_tag_amp_gist :author_mail_tag
+end
+def author_mail_tag()
+	h = author_mail_tag_amp_gist
+	h += gist_prefetch if check_gist_needed
+	h
+end
+
+unless respond_to?(:robot_control_amp_gist)
+  alias :robot_control_amp_gist :robot_control
+end
+def robot_control()
+	h = robot_control_amp_gist
+	h += gist_async if check_gist_needed
+	h
+end
+
+
+def gist_prefetch()
+	h = %Q|\n\t<link rel="preload" as="script" href="https://cdn.ampproject.org/v0/amp-gist-0.1.js">|
+end
+
+def gist_async()
+	h = %Q|\n\t<script async custom-element="amp-gist" src="https://cdn.ampproject.org/v0/amp-gist-0.1.js"></script>|
 end
 
 def amp_gist( gist_id, height )
-  <<-HTML
+	<<-HTML
 <amp-gist
     data-gistid="#{gist_id}"
     layout="fixed-height"
@@ -44,3 +42,11 @@ def amp_gist( gist_id, height )
 </amp-gist>
 HTML
 end
+
+# Local Variables:
+# mode: ruby
+# indent-tabs-mode: t
+# tab-width: 3
+# ruby-indent-level: 3
+# End:
+# vim: ts=3

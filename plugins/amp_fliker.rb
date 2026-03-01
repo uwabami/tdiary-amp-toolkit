@@ -45,12 +45,12 @@ def amp_flickr(photo_id, size = nil, place = 'flickr')
   %Q|<a href="#{photo[:page]}" class="flickr"><amp-img title="#{photo[:title]}" alt="#{photo[:title]}" src="#{photo[:src]}" class="#{place} photo" height="#{photo[:height]}" width="#{photo[:width]}" layout="responsive"></amp-img></a>|
 end
 
-def flickr_left(photo_id, size = nil)
-  flickr(photo_id, size, 'left')
+def amp_flickr_left(photo_id, size = nil)
+  amp_flickr(photo_id, size, 'left')
 end
 
 def flickr_right(photo_id, size = nil)
-  flickr(photo_id, size, 'right')
+  amp_flickr(photo_id, size, 'right')
 end
 
 def flickr_photo_info(photo_id, size)

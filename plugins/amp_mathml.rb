@@ -6,7 +6,33 @@
 # usage:
 #   <%= amp_mathml "src" %>
 #
-add_header_proc do
+unless respond_to?(:author_mail_tag_amp_mathml)
+  alias :author_mail_tag_amp_mathml :author_mail_tag
+end
+def author_mail_tag()
+	h = author_mail_tag_amp_mathml
+	h += mathml_prefetch if check_mathml_needed
+	h
+end
+
+unless respond_to?(:robot_control_amp_mathml)
+  alias :robot_control_amp_mathml :robot_control
+end
+def robot_control()
+	h = robot_control_amp_mathml
+	h += mathml_async if check_mathml_needed
+	h
+end
+
+def mathml_prefetch
+	h = %Q|\n\t<link rel="preload" as="script" href="https://cdn.ampproject.org/v0/amp-mathml-0.1.js">|
+end
+
+def mathml_async
+	h = %Q|\n\t<script async custom-element="amp-mathml" src="https://cdn.ampproject.org/v0/amp-mathml-0.1.js"></script>|
+end
+
+def check_mathml_needed
 	mathml_on = false
 	case @mode
 	when 'latest'
@@ -30,9 +56,7 @@ add_header_proc do
 			end
 		end
 	end
-	if mathml_on
-		%Q|\n	<script async custom-element="amp-mathml" src="https://cdn.ampproject.org/v0/amp-mathml-0.1.js"></script>|
-	end
+	return mathml_on
 end
 
 def amp_mathml(src = nil)

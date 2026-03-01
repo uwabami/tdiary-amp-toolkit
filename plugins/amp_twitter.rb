@@ -6,7 +6,32 @@
 # usage:
 #   <%= amp_twitter "tweeetid" %>
 #
-add_header_proc do
+unless respond_to?(:author_mail_tag_amp_twitter)
+  alias :author_mail_tag_amp_twitter :author_mail_tag
+end
+def author_mail_tag()
+	h = author_mail_tag_amp_twitter
+	h += twitter_prefetch if check_twitter_needed
+	h
+end
+
+unless respond_to?(:robot_control_amp_twitter)
+  alias :robot_control_amp_twitter :robot_control
+end
+def robot_control()
+	h = robot_control_amp_twitter
+	h += twitter_async if check_twitter_needed
+	h
+end
+
+def twitter_prefetch
+	%Q|\n\t<link rel="preload" as="script" href="https://cdn.ampproject.org/v0/amp-twitter-0.1.js">|
+end
+def twitter_async
+	%Q|\n\t<script async custom-element="amp-twitter" src="https://cdn.ampproject.org/v0/amp-twitter-0.1.js"></script>|
+end
+
+def check_twitter_needed
 	twitter_on = false
 	case @mode
 	when 'latest'
@@ -30,9 +55,7 @@ add_header_proc do
 			end
 		end
 	end
-	if twitter_on
-		%Q|\n	<script async custom-element="amp-twitter" src="https://cdn.ampproject.org/v0/amp-twitter-0.1.js"></script>|
-	end
+	return twitter_on
 end
 
 def amp_twitter(tweetid = nil)

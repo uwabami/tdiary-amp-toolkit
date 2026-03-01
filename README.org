@@ -1,12 +1,17 @@
 * What's this?
 
-  [[http://www.tdiary.org/][tDiary]] の出力を [[https://www.ampproject.org/][amp html]] にするための patch と plugin.
+  [[http://www.tdiary.org/][tDiary]] の出力を [[https://www.ampproject.org/][AMP]] にするための patch と plugin.
 
-  単に [[https://www.ampproject.org/][amp html]] の出力を用意するだけならば, 本体に同梱されている =amp.rb= プラグインを有効にするのが良いでしょう.
+  単に [[https://www.ampproject.org/][AMP]] の出力を別ページで行なうならば,
+  本体に同梱されている =amp.rb= プラグイン([[https://github.com/tdiary/tdiary-core/blob/master/misc/plugin/amp.rb][amp.rb]]) を有効にすると良いんじゃないかと思います
+  (試してませんけれど).
 
+  この plugin, patch は別ページではなく,
+  tDiary の出力そのものを [[https://www.ampproject.org/][AMP]] にすることを目的として作成しました.
 * How to use
 
-  1. tdiary.conf 内で
+  1. [[file:patches/amp.rb][patches/amp.rb]] を有効にします.
+     tdiary.conf 内で
      #+BEGIN_SRC ruby
 :
 repos = "location of this repository"
@@ -15,19 +20,76 @@ load_cgi_conf
 require "#{repos}/patches/amp.rb"
 :
      #+END_SRC
-     とする.
+     とすると良いです.
+     やっていることは html ヘッダなどの置換上書きです.
+     この時点で tDiary の出力は =HTML 4.01 Strict= ではなくなります.
 
   2. プラグイン画面で
-     =00_amp_header.rb= と =zz_amp_header_and_footer.rb= を
-     有効にする.
+     [[file:plugins/00_amp_fix.rb]] を有効にします.
+     =add_header_proc= などで必要な javascript などを呼び出す様にしています.
+* Processing outline
+
+  tDiary のヘッダ生成は [[https://github.com/tdiary/tdiary-core/blob/master/lib/tdiary/plugin/00default.rb][00default.rb]] にある
+  #+begin_src ruby
+add_header_proc do
+	calc_links
+	<<-HEADER
+	<meta charset="#{h charset}">
+	<meta name="generator" content="tDiary #{h TDIARY_VERSION}">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	#{author_name_tag}
+	#{author_mail_tag}
+	#{index_page_tag}
+	#{icon_tag}
+	#{ogp_tag}
+	#{description_tag}
+	#{css_tag.chomp}
+	#{jquery_tag.chomp}
+	#{script_tag.chomp}
+	#{title_tag.chomp}
+	#{robot_control.chomp}
+	HEADER
+end
+  #+end_src
+  が使われます.
+
+  このうち
+  1. =#{author_mail_tag}= を
+     #+begin_src html
+<!-- amp preload -->
+<link rel="preload" as="script" href="https://cdn.ampproject.org/v0.js">
+<link rel="preload" as="script" href="https://cdn.ampproject.org/v0/amp-geo-0.1.js">
+<link rel="preload" as="script" href="https://cdn.ampproject.org/v0/amp-consent-0.1.js">
+<link rel="preload" as="script" href="https://cdn.ampproject.org/v0/amp-analytics-0.1.js">
+<link rel="preload" as="script" href="https://cdn.ampproject.org/v0/amp-form-0.1.js">
+<link rel="preload" as="script" href="https://cdn.ampproject.org/v0/amp-font-0.1.js">
+<link rel="preload" as="script" href="https://cdn.ampproject.org/v0/amp-list-0.1.js">
+<link rel="preload" as="script" href="https://cdn.ampproject.org/v0/amp-mustache-0.2.js">
+<!-- /amp preload -->]
+     #+end_src
+  2. =#{css_tag}= を
+     #+begin_src html
+<script async src="https://cdn.ampproject.org/v0.js"></script>
+<style amp-custom>テーマで指定した CSS と base.css, conf.css を一行にした文字列</style>
+<style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal ... 以下略</style>
+<script async custom-element="amp-list" src="https://cdn.ampproject.org/v0/amp-list-0.1.js"></script>
+<script async custom-template="amp-mustache" src="https://cdn.ampproject.org/v0/amp-mustache-0.2.js"></script>
+<script async custom-element="amp-form" src="https://cdn.ampproject.org/v0/amp-form-0.1.js"></script>
+<script async custom-element="amp-font" src="https://cdn.ampproject.org/v0/amp-font-0.1.js"></script>
+     #+end_src
+     に利用しています.
+
+  他のプラグインなどでも =author_mail_tag= で preload の設定→ =css_tag= で読み込み, となっている筈です.
+
 * 不具合など
 
   沢山あります.
+
   そもそも [[http://www.tdiary.org/][tDiary]] は =HTML4.01 Strict= で記述することになっているので
   様々な plugin が動かないでしょう(動くけれど AMP Validation に失敗するでしょう).
 
-  - 気にしている所/TODO [0/1]
-    - =patches/amp.rb= で =eval_rhtml= を上書きしている(=gsub= してる)が, イケてない気がする.
-    - [ ] =ld+json= を提供すること
-    - [ ] 動作する/させる mode はこれで正しいか?
-    - [ ] ツッコミを =amp-form= で動くようにする.
+  ツッコミが有効かは試していません.
+  自分のサイトではツッコミをクローズしているので,
+  今の所, 対応予定はない, です.
+
+  とはいえ, 諸々弄って対応する前に, 既に「死に体」の [[https://www.ampproject.org/][AMP]] がどうなるか, ですけど.

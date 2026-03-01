@@ -219,7 +219,7 @@ if @mode =~ /^(form|edit)$/ and @conf['category.edit_support'] != 0
 end
 
 if @mode == 'conf' || @mode == 'saveconf'
-	add_conf_proc('category', @category_conf_label, 'basic') do
+	add_conf_proc('amp_category', "カテゴリ選択", 'basic') do
 		if @mode == 'saveconf'
 			category_rebuild(@years) if @cgi.valid?('category_initialize')
 			@conf['category.edit_support'] = (@cgi.params['category.edit_support'][0] || '1').to_i

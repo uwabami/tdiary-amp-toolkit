@@ -9,11 +9,7 @@ def google_photos(src, width, height, alt="photo", place="photo", scale=nil)
 	scale = scale || @conf['google_photos.scale'] || 100
 	width = width.to_i * (scale.to_f / 100)
 	height = height.to_i * (scale.to_f / 100)
-	unless place =='photo'
-		%Q|<span class="col-9 mx-auto #{place}-align"><amp-img title="#{alt}" width="#{width}" height="#{height}" alt="#{alt}" src="#{src}" layout="responsive"></amp-img></span>|
-	else
-		%Q|<span class="col-9 mx-auto"><amp-img title="#{alt}" width="#{width}" height="#{height}" alt="#{alt}" src="#{src}" layout="responsive"></amp-img></span>|
-	 end
+	%Q|<amp-img title="#{alt}" width="#{width}" height="#{height}" alt="#{alt}" src="#{src}" layout="responsive"></amp-img>|
 end
 
 def google_photos_left(src, width, height, alt="photo", scale=nil)
@@ -48,7 +44,7 @@ add_edit_proc do |date|
 FORM
 end
 
-add_conf_proc('google_photos', 'Googleフォト') do
+add_conf_proc('google_photos', 'Googleフォト', 'etc') do
 	if @mode == 'saveconf'
 		@conf['google_photos.api_key'] = @cgi.params['google_photos.api_key'][0]
 		@conf['google_photos.client_id'] = @cgi.params['google_photos.client_id'][0]

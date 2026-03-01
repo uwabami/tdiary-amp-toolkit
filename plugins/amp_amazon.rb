@@ -212,7 +212,7 @@ def amazon_get(asin, with_image = true, label = nil, pos = 'amazon')
 	end
 end
 
-add_conf_proc( 'amazon', @amazon_label_conf ) do
+add_conf_proc( 'amazon', "Amazon", 'etc' ) do
 	amazon_conf_proc
 end
 

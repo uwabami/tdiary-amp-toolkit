@@ -1,6 +1,8 @@
 # google_sitemap.rb
 # Copyright (c) 2006 http://d.bulkitem.com/
 # Distributed under the GPL
+#
+# - 2026/03/01 index.html も出力する様にしてみた
 
 add_update_proc do
   require 'time'
